@@ -1,4 +1,4 @@
-# CS5760 – Natural Language Processing (Spring 2026)
+# CS5760 – Natural Language Processing
 ## Homework 2
 
 **Student Name:** Shaik Karishma  
