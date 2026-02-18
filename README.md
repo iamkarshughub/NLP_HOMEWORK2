@@ -4,17 +4,11 @@
 **Student Name:** Shaik Karishma  
 **Student ID:** 700768890
 
----
 
-## Submission Requirements (per HW2 handout)
-- Push source code to GitHub and explain the work via README.
-- Include student info in README.
-- Submit the GitHub link on Brightspace.
-- Comment code appropriately.
 
 ---
 
-# Part I — Writing / Calculations (Brief)
+# Part I — Writing / Calculations 
 
 ## Q1) Worked Example: Classify “predictable no fun”
 Naive Bayes score:
@@ -25,9 +19,9 @@ For **“predictable no fun”**:
 - Score(pos) = P(pos)·P(predictable|pos)·P(no|pos)·P(fun|pos)
 - Score(neg) = P(neg)·P(predictable|neg)·P(no|neg)·P(fun|neg)
 
-✅ Pick the class with the larger score. (Notebook computes both scores once you plug in the given likelihoods from the slide/Q2.)
+ Pick the class with the larger score. (Notebook computes both scores once you plug in the given likelihoods from the slide/Q2.)
 
-## Q2) Harms of Classification (short)
+## Q2) Harms of Classification 
 - **Representational harm:** systems reinforce stereotypes/biased associations about groups (Kiritchenko & Mohammad, 2018).
 - **Censorship risk:** toxicity filters may over-flag identity-related or reclaimed terms, silencing legitimate speech (Dixon et al., 2018; Oliva et al., 2021).
 - **Why worse on AAE/Indian English:** training data mismatch + dialect features (domain shift) → more false positives/negatives.
@@ -51,7 +45,7 @@ P(S1) = (2/3)·1·(1/2)·1 = 1/3
 **S2:** <s> I love deep learning </s>
 P(S2) = (2/3)·1·(1/2)·1·(1/2) = 1/6
 
-✅ **More probable:** S1.
+**More probable:** S1.
 
 ### (B) Zero-probability problem
 MLE P(noodle|ate) = 0 because the bigram never appears.
@@ -89,7 +83,7 @@ Per-class:
 Macro Precision/Recall ≈ (0.25+0.4444+0.40)/3 ≈ 0.3648
 Micro Precision/Recall = (5+20+10)/90 = 35/90 ≈ 0.3889
 
-✅ Code prints all metrics clearly.
+ Code prints all metrics clearly.
 
 ---
 
