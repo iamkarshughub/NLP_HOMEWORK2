@@ -281,3 +281,11 @@ probability of each test sentence
 which sentence is preferred by the model
 
 This demonstrates how language models evaluate fluency.
+
+
+#How to Run
+
+- Open notebook in Google Colab
+- Run all cells
+- Bigram language model: unigram/bigram counts, MLE probabilities, sentence probability for S1 and S2, and preference output.
+- Confusion matrix metrics: per-class precision/recall, macro and micro averages, printed clearly.
