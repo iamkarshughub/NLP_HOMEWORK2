@@ -8,23 +8,31 @@
 
 ---
 #Q1 — Worked Example Document Classification (“predictable no fun”)
-**Prompt:** Using the smoothed likelihoods and priors from the slide example (referenced in HW2), compute the probability scores for the document **“predictable no fun”** under both the positive and negative classes, show each multiplication step, and pick the class.  
+
+Using the smoothed likelihoods and priors from the slide example (referenced in HW2), compute the probability scores for the document “predictable no fun” under both the positive and negative classes, show each multiplication step, and pick the class.  
 
  Formula Used
+ 
 Score(c) = P(c) × Π P(w | c)  for each word w in the document
 
 Document
+
 d = ["predictable", "no", "fun"]
 
 Step-by-step setup (plug in the slide’s smoothed likelihood values)
+
 Positive score:
+
 Score(+) = P(+) × P(predictable | +) × P(no | +) × P(fun | +)
 
 Negative score:
+
 Score(−) = P(−) × P(predictable | −) × P(no | −) × P(fun | −)
 
 Decision Rule
-If Score(+) > Score(−), classify as Positive.  
+
+If Score(+) > Score(−), classify as Positive.
+
 If Score(−) > Score(+), classify as Negative.
 
 
