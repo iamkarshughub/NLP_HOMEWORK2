@@ -8,18 +8,51 @@
 
 ---
 
-# Part I — Writing / Calculations 
+#Q1 — Naive Bayes Document Classification
 
-## Q1) Worked Example: Classify “predictable no fun”
-Naive Bayes score:
+The task is to classify a document using Naive Bayes with add-1 smoothing.
 
-Score(c) = P(c) × Π P(w_i | c)
+Formula Used
 
-For **“predictable no fun”**:
-- Score(pos) = P(pos)·P(predictable|pos)·P(no|pos)·P(fun|pos)
-- Score(neg) = P(neg)·P(predictable|neg)·P(no|neg)·P(fun|neg)
+The Naive Bayes score for class 
+𝑐
+c:
 
- Pick the class with the larger score. (Notebook computes both scores once you plug in the given likelihoods from the slide/Q2.)
+Score(c) = P(c) × ∏ P(w | c)
+
+where:
+
+P(c) is the prior probability
+
+P(w | c) is the likelihood of each word given the class
+
+Add-1 smoothing:
+
+P(w | c) = (count(w,c) + 1) / (N_c + |V|)
+
+Example Classification
+
+Sentence: very fun and predictable
+
+Given:
+
+P(−)=3/5, P(+)=2/5
+
+Vocabulary size = 20
+
+Negative tokens = 14 → denominator = 34
+
+Positive tokens = 9 → denominator = 29
+
+Likelihoods were computed for each word using smoothing and multiplied with priors.
+
+After comparing scores, the negative class produced the larger value.
+
+Final Result
+
+The sentence is classified as Negative.
+
+This demonstrates how Naive Bayes combines prior knowledge and word likelihoods.
 
 #Q2) Harms of Classification
 
@@ -33,8 +66,8 @@ A key risk is over-blocking or silencing: systems may label non-toxic content as
 Models often perform worse because training/test data is not balanced across dialects. If a model is mostly trained on “standard” English, dialect grammar/spelling/phrasing looks “unusual” to the model, increasing false positives/negatives.
 
 
-## Q3) Bigram Probabilities + Zero Probability
-### (A) Sentence probabilities (MLE)
+#Q3) Bigram Probabilities + Zero Probability
+(A) Sentence probabilities (MLE)
 Bigram MLE: P(w|h) = C(h,w) / C(h)
 
 From the table:
@@ -52,492 +85,56 @@ P(S1) = (2/3)·1·(1/2)·1 = 1/3
 **S2:** <s> I love deep learning </s>
 P(S2) = (2/3)·1·(1/2)·1·(1/2) = 1/6
 
-✅ **More probable:** S1.
+**More probable:** S1.
 
-### (B) Zero-probability problem
+(B) Zero-probability problem
 MLE P(noodle|ate) = 0 because the bigram never appears.
 This makes any sentence containing “ate noodle” have probability 0 (bad for sentence probability and perplexity).
 
 **Add-1 smoothing** (given |V|=10, total after “ate” = 12):
 P_add1(noodle|ate) = (0+1)/(12+10) = 1/22
 
+#Q4 — Backoff Model
 
-#Q4) Backoff Model
+The purpose of this question is to compute language model probabilities when higher-order n-grams are missing. A backoff model first attempts to use trigram probability and, if the trigram is unseen, backs off to a bigram model.
 
-A backoff model means:
+Formula Used
 
-Try the highest-order model first (trigram).
+Trigram Maximum Likelihood Estimation:
 
-If it’s unseen (probability 0), back off to a lower-order model (bigram).
+P(wᵢ | wᵢ₋₂ , wᵢ₋₁) = C(wᵢ₋₂ , wᵢ₋₁ , wᵢ) / C(wᵢ₋₂ , wᵢ₋₁)
 
-If that’s also unseen, back off again (unigram).
+If the trigram count is zero, the model backs off to the bigram probability:
 
-✅ Key Formulas
-1) Trigram MLE
-𝑃
-(
-𝑤
-𝑖
-∣
-𝑤
-𝑖
-−
-2
-,
-𝑤
-𝑖
-−
-1
-)
-=
-𝐶
-(
-𝑤
-𝑖
-−
-2
-,
-𝑤
-𝑖
-−
-1
-,
-𝑤
-𝑖
-)
-𝐶
-(
-𝑤
-𝑖
-−
-2
-,
-𝑤
-𝑖
-−
-1
-)
-P(w
-i
-	​
+P(wᵢ | wᵢ₋₁) = C(wᵢ₋₁ , wᵢ) / C(wᵢ₋₁)
 
-∣w
-i−2
-	​
+(a) Compute P(cats | I, like)
 
-,w
-i−1
-	​
+From the corpus:
 
-)=
-C(w
-i−2
-	​
+C(I, like, cats) = 1
+C(I, like) = 2
 
-,w
-i−1
-	​
+Applying the trigram formula:
 
-)
-C(w
-i−2
-	​
+P(cats | I, like) = 1 / 2 = 0.5
 
-,w
-i−1
-	​
+Therefore, the trigram probability equals 0.5.
 
-,w
-i
-	​
+(b) Compute P(dogs | You, like) using trigram → bigram backoff
 
-)
-	​
+The trigram (You like dogs) does not appear in the corpus. Therefore, the trigram probability becomes zero and the model backs off to the bigram level.
 
-2) Bigram MLE (backoff level 1)
-𝑃
-(
-𝑤
-𝑖
-∣
-𝑤
-𝑖
-−
-1
-)
-=
-𝐶
-(
-𝑤
-𝑖
-−
-1
-,
-𝑤
-𝑖
-)
-𝐶
-(
-𝑤
-𝑖
-−
-1
-)
-P(w
-i
-	​
+From the corpus:
 
-∣w
-i−1
-	​
+C(like, dogs) = 1
+C(like) = 3
 
-)=
-C(w
-i−1
-	​
+Applying the bigram formula:
 
-)
-C(w
-i−1
-	​
+P(dogs | like) = 1 / 3 ≈ 0.33
 
-,w
-i
-	​
-
-)
-	​
-
-3) Unigram MLE (backoff level 2)
-𝑃
-(
-𝑤
-𝑖
-)
-=
-𝐶
-(
-𝑤
-𝑖
-)
-𝑁
-P(w
-i
-	​
-
-)=
-N
-C(w
-i
-	​
-
-)
-	​
-
-✅ (a) Compute 
-𝑃
-(
-cats
-∣
-𝐼
-,
-𝑙
-𝑖
-𝑘
-𝑒
-)
-P(cats∣I,like)
-
-We first try trigram probability because we have a two-word history (I, like).
-
-Given counts (from the question):
-
-𝐶
-(
-𝐼
-,
-𝑙
-𝑖
-𝑘
-𝑒
-,
-𝑐
-𝑎
-𝑡
-𝑠
-)
-=
-1
-C(I,like,cats)=1
-
-𝐶
-(
-𝐼
-,
-𝑙
-𝑖
-𝑘
-𝑒
-)
-=
-2
-C(I,like)=2
-
-Apply trigram formula:
-
-𝑃
-(
-𝑐
-𝑎
-𝑡
-𝑠
-∣
-𝐼
-,
-𝑙
-𝑖
-𝑘
-𝑒
-)
-=
-𝐶
-(
-𝐼
-,
-𝑙
-𝑖
-𝑘
-𝑒
-,
-𝑐
-𝑎
-𝑡
-𝑠
-)
-𝐶
-(
-𝐼
-,
-𝑙
-𝑖
-𝑘
-𝑒
-)
-=
-1
-2
-=
-0.5
-P(cats∣I,like)=
-C(I,like)
-C(I,like,cats)
-	​
-
-=
-2
-1
-	​
-
-=0.5
-
-✅ Answer: 
-0.5
-0.5
-	​
-
-
-✅ (b) Compute 
-𝑃
-(
-dogs
-∣
-𝑌
-𝑜
-𝑢
-,
-𝑙
-𝑖
-𝑘
-𝑒
-)
-P(dogs∣You,like) using trigram → bigram backoff
-Step 1 — Try trigram first
-
-We check:
-
-𝐶
-(
-𝑌
-𝑜
-𝑢
-,
-𝑙
-𝑖
-𝑘
-𝑒
-,
-𝑑
-𝑜
-𝑔
-𝑠
-)
-C(You,like,dogs)
-
-The trigram (You like dogs) does not appear in the corpus, so:
-
-𝐶
-(
-𝑌
-𝑜
-𝑢
-,
-𝑙
-𝑖
-𝑘
-𝑒
-,
-𝑑
-𝑜
-𝑔
-𝑠
-)
-=
-0
-⇒
-𝑃
-(
-𝑑
-𝑜
-𝑔
-𝑠
-∣
-𝑌
-𝑜
-𝑢
-,
-𝑙
-𝑖
-𝑘
-𝑒
-)
-=
-0
-C(You,like,dogs)=0⇒P(dogs∣You,like)=0
-
-That means trigram MLE fails (zero probability), so we back off.
-
-Step 2 — Back off to bigram
-
-Now we compute using only the most recent word like:
-
-Given counts:
-
-𝐶
-(
-𝑙
-𝑖
-𝑘
-𝑒
-,
-𝑑
-𝑜
-𝑔
-𝑠
-)
-=
-1
-C(like,dogs)=1
-
-𝐶
-(
-𝑙
-𝑖
-𝑘
-𝑒
-)
-=
-3
-C(like)=3
-
-Apply bigram formula:
-
-𝑃
-(
-𝑑
-𝑜
-𝑔
-𝑠
-∣
-𝑙
-𝑖
-𝑘
-𝑒
-)
-=
-𝐶
-(
-𝑙
-𝑖
-𝑘
-𝑒
-,
-𝑑
-𝑜
-𝑔
-𝑠
-)
-𝐶
-(
-𝑙
-𝑖
-𝑘
-𝑒
-)
-=
-1
-3
-≈
-0.333
-P(dogs∣like)=
-C(like)
-C(like,dogs)
-	​
-
-=
-3
-1
-	​
-
-≈0.333
-
-✅ Answer (with backoff):
-
-𝑃
-(
-𝑑
-𝑜
-𝑔
-𝑠
-∣
-𝑌
-𝑜
-𝑢
-,
-𝑙
-𝑖
-𝑘
-𝑒
-)
-≈
-1
-3
-P(dogs∣You,like)≈
-3
-1
-	​
-
-	​
-
+Hence, the backoff probability is approximately 0.33.
 (c) Why backoff is necessary (important explanation)
 
 In real text data, the number of possible trigrams is huge, so most valid trigrams won’t appear in a small training set.
@@ -558,7 +155,7 @@ results become more stable and realistic under sparse data conditions
 	​
 
 
-## Q5) Multi-class Metrics
+#Q5) Multi-class Metrics
 Confusion matrix (System rows × Gold columns):
 
 |        | Cat | Dog | Rabbit |
@@ -581,6 +178,63 @@ Micro Precision/Recall = (5+20+10)/90 = 35/90 ≈ 0.3889
 
  Code prints all metrics clearly.
 
+ Interpretation
+
+Macro average is useful when class distribution is uneven, while micro average reflects overall system performance.
+
+
+#Task 2 — Evaluation Metrics from Confusion Matrix
+Goal
+
+This task evaluates classification performance using precision and recall for multiple classes.
+
+Input
+
+The program uses a confusion matrix representing predicted vs true labels for three classes.
+
+Each row corresponds to predictions and each column corresponds to actual labels.
+
+Step 1 — Extract class statistics
+
+For each class, the code computes:
+
+True positives
+
+False positives
+
+False negatives
+
+These values form the basis of evaluation metrics.
+
+Step 2 — Compute precision and recall
+
+Precision measures prediction correctness, while recall measures coverage of actual instances.
+
+The program calculates these values separately for each class to understand class-specific performance.
+
+Step 3 — Macro averaging
+
+Macro averaging computes the mean of per-class metrics, giving equal importance to each class.
+
+This is useful when class distributions are imbalanced.
+
+Step 4 — Micro averaging
+
+Micro averaging aggregates counts across all classes before computing metrics. This reflects overall system performance.
+
+Output
+
+The notebook prints:
+
+precision and recall for each class
+
+macro precision and recall
+
+micro precision and recall
+
+These outputs provide a complete evaluation of classifier behavior.
+
+
 ---
 
 # Part II — Programming
@@ -592,7 +246,56 @@ Micro Precision/Recall = (5+20+10)/90 = 35/90 ≈ 0.3889
   - <s> I love deep learning </s>
 - Prints which sentence is preferred (higher probability).
 
-## How to Run
-1. Open the notebook: **CS5760_HW2_Shaik_Karishma_700768890.ipynb**
-2. Run all cells top-to-bottom.
-3. Outputs will print in the notebook.
+The objective of this task is to build a simple bigram language model that learns word transition probabilities from a training corpus and uses them to compute sentence probabilities.
+
+Input
+
+The program takes a small set of training sentences that include start and end tokens. These tokens allow the model to learn sentence boundaries.
+
+Example training data contains sentences such as:
+
+I love NLP
+
+I love deep learning
+
+deep learning is fun
+
+Step 1 — Counting n-grams
+
+The code first counts:
+
+individual word occurrences (unigrams)
+
+adjacent word pairs (bigrams)
+
+This counting process builds the statistical foundation of the language model.
+
+Step 2 — Computing bigram probabilities
+
+The program uses Maximum Likelihood Estimation:
+
+P(wᵢ | wᵢ₋₁) = C(wᵢ₋₁ , wᵢ) / C(wᵢ₋₁)
+
+This means the probability of a word depends on how often it follows the previous word in the corpus.
+
+Step 3 — Sentence probability calculation
+
+To compute the probability of a sentence, the program multiplies the probabilities of each bigram sequence from start to end.
+
+The program also prints each intermediate probability so the calculation can be traced.
+
+This allows comparison between two sentences to determine which one the model considers more likely.
+
+Output
+
+The notebook shows:
+
+unigram counts
+
+bigram counts
+
+probability of each test sentence
+
+which sentence is preferred by the model
+
+This demonstrates how language models evaluate fluency.
