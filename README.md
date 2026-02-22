@@ -7,52 +7,26 @@
 
 
 ---
+#Q1 — Worked Example Document Classification (“predictable no fun”)
+**Prompt:** Using the smoothed likelihoods and priors from the slide example (referenced in HW2), compute the probability scores for the document **“predictable no fun”** under both the positive and negative classes, show each multiplication step, and pick the class.  
 
-#Q1 — Naive Bayes Document Classification
+ Formula Used
+Score(c) = P(c) × Π P(w | c)  for each word w in the document
 
-The task is to classify a document using Naive Bayes with add-1 smoothing.
+Document
+d = ["predictable", "no", "fun"]
 
-Formula Used
+Step-by-step setup (plug in the slide’s smoothed likelihood values)
+Positive score:
+Score(+) = P(+) × P(predictable | +) × P(no | +) × P(fun | +)
 
-The Naive Bayes score for class 
-𝑐
-c:
+Negative score:
+Score(−) = P(−) × P(predictable | −) × P(no | −) × P(fun | −)
 
-Score(c) = P(c) × ∏ P(w | c)
+Decision Rule
+If Score(+) > Score(−), classify as Positive.  
+If Score(−) > Score(+), classify as Negative.
 
-where:
-
-P(c) is the prior probability
-
-P(w | c) is the likelihood of each word given the class
-
-Add-1 smoothing:
-
-P(w | c) = (count(w,c) + 1) / (N_c + |V|)
-
-Example Classification
-
-Sentence: very fun and predictable
-
-Given:
-
-P(−)=3/5, P(+)=2/5
-
-Vocabulary size = 20
-
-Negative tokens = 14 → denominator = 34
-
-Positive tokens = 9 → denominator = 29
-
-Likelihoods were computed for each word using smoothing and multiplied with priors.
-
-After comparing scores, the negative class produced the larger value.
-
-Final Result
-
-The sentence is classified as Negative.
-
-This demonstrates how Naive Bayes combines prior knowledge and word likelihoods.
 
 #Q2) Harms of Classification
 
