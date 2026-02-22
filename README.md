@@ -125,6 +125,69 @@ which sentence is preferred by the model
 
 This demonstrates how language models evaluate fluency.
 
+## Q3/Q4 (Additional)
+
+
+Bigram Count Construction
+
+The first step in the program is building a bigram frequency table. Each word is treated as a history term and the counts of words that follow it are stored. This allows the model to estimate the probability of the next word using observed frequencies.
+
+For example, after the word “I”, the word “love” appears multiple times, which results in a higher probability for that transition.
+
+This count table forms the basis for all later probability calculations.
+
+Maximum Likelihood Estimation (MLE)
+
+Using the count table, the program calculates bigram probabilities using the MLE formula:
+
+P(w | h) = count(h,w) / total occurrences after h
+
+This step measures how likely a word is to follow another word based purely on training data frequencies. The program computes these probabilities dynamically by summing counts for each history word.
+
+Sentence Probability Computation
+
+After computing bigram probabilities, the notebook evaluates complete sentences. The probability of a sentence is calculated by multiplying the probabilities of all bigram transitions within the sentence.
+
+Two sentences are tested:
+
+I love NLP
+
+I love deep learning
+
+The model computes likelihood for each sentence and selects the one with the higher probability as the preferred sentence.
+
+This demonstrates how language models compare alternative sentences.
+
+Zero Probability Problem
+
+The notebook also checks a case where a bigram was never seen in training, such as noodle following ate. With MLE, this produces a probability of zero. This creates issues because one zero makes the entire sentence probability zero.
+
+This is known as the data sparsity problem in N-gram models.
+
+Add-One (Laplace) Smoothing
+
+To address the zero probability issue, add-one smoothing is applied. This method adds one to every count and adjusts the denominator using the vocabulary size.
+
+This ensures that unseen word pairs receive a small non-zero probability and the model can still evaluate sentences containing unseen combinations.
+
+Backoff Concept
+
+The notebook briefly demonstrates backoff behavior. When a bigram probability is unreliable or unseen, the model can rely on simpler probabilities such as unigram frequencies. This improves robustness when training data is limited.
+
+Sample Outcome
+
+The results show:
+
+Sentence likelihood values for both test sentences
+
+The preferred sentence selected by the model
+
+MLE probability for an unseen bigram
+
+Smoothed probability after applying Laplace smoothing
+
+These outputs confirm the theoretical concepts discussed in class.
+
 
 ##How to Run
 
